@@ -8,3 +8,12 @@ def add(a, b):
     and the value after `return` is the result.
     """
     return a + b
+
+
+def subtract(a, b):
+    """Return the result of subtracting b from a.
+
+    This function is similar to add(), but it uses the minus operator.
+    For example, subtract(5, 2) returns 3.
+    """
+    return a - b
