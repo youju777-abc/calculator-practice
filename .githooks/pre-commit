@@ -1,0 +1,27 @@
+#!/usr/bin/env sh
+set -eu
+
+patterns='OPENAI_API_KEY|sk-|sk-proj-|AWS_SECRET_ACCESS_KEY|PRIVATE KEY'
+
+if git diff --cached --name-only --diff-filter=ACMR | grep -q .; then
+  matches="$(
+    git grep -n -I -E "$patterns" --cached -- . \
+      ':!README_SECRET_GUARD.md' \
+      ':!.githooks/pre-commit' \
+      ':!.env.example' || true
+  )"
+else
+  matches=""
+fi
+
+if [ -n "$matches" ]; then
+  printf '%s\n' "Secret Guard blocked this commit."
+  printf '%s\n' ""
+  printf '%s\n' "Potential API key or private key text was found in staged files:"
+  printf '%s\n' "$matches"
+  printf '%s\n' ""
+  printf '%s\n' "Remove the secret, unstage the file, or replace it with a placeholder before committing."
+  exit 1
+fi
+
+exit 0
